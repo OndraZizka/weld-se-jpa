@@ -1,0 +1,1 @@
+src/main/java/org/jboss/weld/environment/se/jpa/README.txt

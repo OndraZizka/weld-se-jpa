@@ -1,5 +1,5 @@
 
-Get inspired by
+Got inspired by
 http://www.laliluna.de/articles/2011/01/12/jboss-weld-jpa-hibernate.html
 
 

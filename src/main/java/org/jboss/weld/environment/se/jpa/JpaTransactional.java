@@ -10,6 +10,9 @@ import java.lang.annotation.Target;
 
 
 /**
+ * The @JpaTransactional is introduced because Java EE's @Transactional 
+ * has more functionality than weld-se-jpa currently provides. Maybe later ;-)
+ * 
  * The @InterceptorBinding tells Weld that this annotation can be used with an interceptor.
  */
 

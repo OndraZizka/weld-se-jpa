@@ -27,43 +27,42 @@ The annotations @Interceptor and @Transactional tell Weld that every time it fin
 @Interceptor
 @JpaTransactional
 public class JpaTransactionInterceptor {
+	private Logger logger = LoggerFactory.getLogger(JpaTransactionInterceptor.class);
+	
+	
+	@Inject private EntityManagerStore entityManagerStore;
 
-		@Inject
-		private EntityManagerStore entityManagerStore;
-		private Logger logger = LoggerFactory.getLogger(JpaTransactionInterceptor.class);
-
-		@AroundInvoke
-		public Object runInTransaction(InvocationContext invocationContext) throws Exception {
+	@AroundInvoke
+	public Object runInTransaction(InvocationContext invocationContext) throws Exception {
 
 
-				// Create / get EM.
-				EntityManager em = entityManagerStore.createAndRegister();
+		// Create / get EM.
+		EntityManager em = entityManagerStore.createAndRegister();
 
-				Object result = null;
-				try {
-						em.getTransaction().begin();
-						result = invocationContext.proceed();
-						em.getTransaction().commit();
-				}
-				catch (Exception e) {
-						try {
-								if (em.getTransaction().isActive()) {
-										em.getTransaction().rollback();
-										logger.debug("Rolled back transaction");
-								}
-						}
-						catch (Exception e1) {
-								logger.warn("Rollback of transaction failed: " + e1);
-						}
-						throw e;
-				}
-				finally {
-						if (em != null) {
-								entityManagerStore.unregister(em);
-								em.close();
-						}
-				}
-
-				return result;
+		Object result = null;
+		try {
+			em.getTransaction().begin();
+			result = invocationContext.proceed();
+			em.getTransaction().commit();
 		}
+		catch (Exception e) {
+			try {
+				if (em.getTransaction().isActive()) {
+					em.getTransaction().rollback();
+					logger.debug("Rolled back transaction");
+				}
+			} catch (Exception e1) {
+				logger.warn("Rollback of transaction failed: " + e1);
+			}
+			throw e;
+		}
+		finally {
+			if (em != null) {
+				entityManagerStore.unregister(em);
+				em.close();
+			}
+		}
+
+		return result;
+	}
 }// class
